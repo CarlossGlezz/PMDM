@@ -109,4 +109,27 @@ public class MainActivity extends AppCompatActivity {
         return String.format(java.util.Locale.getDefault(), "%02d:%02d",
                 segundos / 60, segundos % 60);
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // La barra vuelve a actualizarse al volver a la app
+        handler.post(updateProgressAction);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Pausa la música y detiene la actualización de la barra para ahorrar recursos
+        player.pause();
+        handler.removeCallbacks(updateProgressAction);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Libera el reproductor de la memoria al cerrar la app del todo
+        if (player != null) {
+            player.release();
+        }
+    }
 }
