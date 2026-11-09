@@ -1,0 +1,16 @@
+<resources>
+    <string name="titulo_login">Inicio de Sesión</string>
+    <string name="app_name">LoginCarlos</string>
+    <string name="correo_label">Correo electrónico</string>
+    <string name="correo_hint">Correo</string>
+    <string name="clave_label">Contraseña</string>
+    <string name="clave_hint">Contraseña</string>
+    <string name="recordar_label">Recordar contraseña</string>
+    <string name="btn_continuar">Continuar</string>
+    <string name="acceso_correcto">Usuario y contraseña correctos</string>
+    <string name="acceso_correcto_guardado">Usuario y contraseña correctos. Almacenados para siguientes accesos.</string>
+    <string name="acceso_incorrecto">Usuario y/o contraseña incorrectos</string>
+    <string name="falta_correo">Escribe tu correo</string>
+    <string name="falta_clave">Escribe la contraseña</string>
+    <string name="demasiados_intentos">Demasiados intentos</string>
+</resources>

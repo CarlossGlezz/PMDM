@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Carlos Gonzalez Matias -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FFE53935</color>
+    <color name="cyan">#FF4FC3F7</color>
+    <color name="yellow">#FFFFF176</color>
+    <color name="teal">#FF3E8F8A</color>
+    <color name="calc_display_bg">#FFB0B0B0</color>
+    <color name="calc_keyboard_bg">#FF7E7E7E</color>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+    <color name="fondo_app">#F8FAFC</color>
+    <color name="texto_principal">#334155</color>
+    <color name="acento_boton">#2563EB</color>
+
+
+    <color name="correcto">#10B981</color>
+    <color name="incorrecto">#EF4444</color>
+</resources>
