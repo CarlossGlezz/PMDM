@@ -21,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.TextView tvTiempoActual, tvTiempoTotal;
     private android.os.Handler handler = new android.os.Handler();
     private Runnable updateProgressAction;
+    private android.media.SoundPool soundPool;
+    private int idEfecto1, idEfecto2, idEfecto3, idEfecto4;
+    private int sonidosCargados = 0;
+    private Button btnEfecto1, btnEfecto2, btnEfecto3, btnEfecto4;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,46 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnPausa.setOnClickListener(v -> player.pause());
+
+        // 4. Efectos de sonido (SoundPool)
+        btnEfecto1 = findViewById(R.id.btn_efecto1);
+        btnEfecto2 = findViewById(R.id.btn_efecto2);
+        btnEfecto3 = findViewById(R.id.btn_efecto3);
+        btnEfecto4 = findViewById(R.id.btn_efecto4);
+
+        android.media.AudioAttributes atributos = new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_GAME)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+
+        soundPool = new android.media.SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(atributos)
+                .build();
+
+        soundPool.setOnLoadCompleteListener((soundPool1, sampleId, status) -> {
+            if (status == 0) {
+                sonidosCargados++;
+                // Cuando los 4 estén cargados en memoria, activamos los botones
+                if (sonidosCargados == 4) {
+                    btnEfecto1.setEnabled(true);
+                    btnEfecto2.setEnabled(true);
+                    btnEfecto3.setEnabled(true);
+                    btnEfecto4.setEnabled(true);
+                }
+            }
+        });
+
+        // Cambia R.raw.xxx por los nombres reales de los audios que vayas a usar como efectos
+        idEfecto1 = soundPool.load(this, R.raw.cancion2, 1);
+        idEfecto2 = soundPool.load(this, R.raw.cancion3, 1);
+        idEfecto3 = soundPool.load(this, R.raw.cancion4, 1);
+        idEfecto4 = soundPool.load(this, R.raw.cancion5, 1);
+
+        btnEfecto1.setOnClickListener(v -> soundPool.play(idEfecto1, 1f, 1f, 1, 0, 1f));
+        btnEfecto2.setOnClickListener(v -> soundPool.play(idEfecto2, 1f, 1f, 1, 0, 1f));
+        btnEfecto3.setOnClickListener(v -> soundPool.play(idEfecto3, 1f, 1f, 1, 0, 1f));
+        btnEfecto4.setOnClickListener(v -> soundPool.play(idEfecto4, 1f, 1f, 1, 0, 1f));
     }
     private String formatearTiempo(long ms) {
         long segundos = ms / 1000;
@@ -130,6 +175,9 @@ public class MainActivity extends AppCompatActivity {
         // Libera el reproductor de la memoria al cerrar la app del todo
         if (player != null) {
             player.release();
+        }
+        if (soundPool != null) {
+            soundPool.release();
         }
     }
 }
