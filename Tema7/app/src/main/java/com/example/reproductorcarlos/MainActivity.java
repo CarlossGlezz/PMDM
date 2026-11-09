@@ -17,6 +17,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ExoPlayer player;
     private Button btnPlay, btnPausa;
+    private android.widget.SeekBar seekBar;
+    private android.widget.TextView tvTiempoActual, tvTiempoTotal;
+    private android.os.Handler handler = new android.os.Handler();
+    private Runnable updateProgressAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         // 1. Enlazar vistas
         btnPlay = findViewById(R.id.btn_play);
         btnPausa = findViewById(R.id.btn_pausa);
+        seekBar = findViewById(R.id.seekBar);
+        tvTiempoActual = findViewById(R.id.tv_tiempoActual);
+        tvTiempoTotal = findViewById(R.id.tv_tiempoTotal);
 
         // 2. Crear y preparar el ExoPlayer
         player = new ExoPlayer.Builder(this).build();
@@ -41,6 +48,50 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.cancion1);
         player.setMediaItem(MediaItem.fromUri(uri));
         player.prepare();
+        // Leer la duración cuando el reproductor está listo
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                if (playbackState == Player.STATE_READY) {
+                    long duracionTotal = player.getDuration();
+                    seekBar.setMax((int) duracionTotal);
+                    tvTiempoTotal.setText(formatearTiempo(duracionTotal));
+                }
+            }
+        });
+
+// Acción que actualiza la barra cada 500 ms
+        updateProgressAction = new Runnable() {
+            @Override
+            public void run() {
+                if (player.isPlaying()) {
+                    long tiempoActual = player.getCurrentPosition();
+                    seekBar.setProgress((int) tiempoActual);
+                    tvTiempoActual.setText(formatearTiempo(tiempoActual));
+                }
+                handler.postDelayed(this, 500);
+            }
+        };
+        handler.post(updateProgressAction);
+
+// Configurar la barra para que el usuario la pueda arrastrar
+        seekBar.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(android.widget.SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    tvTiempoActual.setText(formatearTiempo(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(android.widget.SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(android.widget.SeekBar seekBar) {
+                player.seekTo(seekBar.getProgress());
+            }
+        });
+
 
         // 3. Configurar botones
         btnPlay.setOnClickListener(v -> {
@@ -52,5 +103,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnPausa.setOnClickListener(v -> player.pause());
+    }
+    private String formatearTiempo(long ms) {
+        long segundos = ms / 1000;
+        return String.format(java.util.Locale.getDefault(), "%02d:%02d",
+                segundos / 60, segundos % 60);
     }
 }
